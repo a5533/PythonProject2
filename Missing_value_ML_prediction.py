@@ -67,9 +67,28 @@ print(df[["Roll No", "Name"] + subjects + ["Total", "Average", "Grade"]])
 X = df[["Sub1", "Sub2", "Sub3", "Sub4"]]
 y = df["Sub5"]
 
-# Train Model
+# Split data: 80% for training, 20% for testing
+# (If your dataset is very small, adjust test_size or set a fixed random_state)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.4, random_state=42
+)
+
+# Initialize and train the model on the training set
 model = LinearRegression()
-model.fit(X, y)
+model.fit(X_train, y_train)
+
+# Evaluate the model on the test set
+y_pred_test = model.predict(X_test)
+
+print("===score method is used on the trained data to know the accuracy===")
+accuracy=model.score(X_train, y_train)
+print(f"Accuracy of the prediction: {accuracy}")
+mse = mean_squared_error(y_test, y_pred_test)
+r2 = r2_score(y_test, y_pred_test)
+
+print("\n=== MODEL PERFORMANCE ON TEST DATA ===")
+print(f"Mean Squared Error (MSE): {mse:.2f}")
+print(f"R² Score: {r2:.2f}")
 
 # Predict performance for 11th student (Amit Sharma)
 new_student_initial_marks = pd.DataFrame(
@@ -83,7 +102,7 @@ predicted_total = round(sum(all_marks), 1)
 predicted_avg = round(predicted_total / 5, 1)
 
 print("\n--- Predicted Record for Student 11 (Amit Sharma) ---")
-print(f"Sub1: 80.0 | Sub2: 82.0 | Sub3: 85.0 | Sub4: 81.0")
+print("Sub1: 80.0 | Sub2: 82.0 | Sub3: 85.0 | Sub4: 81.0")
 print(f"Predicted Sub5 (via ML Linear Regression): {predicted_sub5}")
 print(f"Predicted Total: {predicted_total}")
 print(f"Predicted Average: {predicted_avg}%")
